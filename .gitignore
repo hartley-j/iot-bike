@@ -3,3 +3,4 @@ webserver-docker/venv/
 iotbike/resources/
 
 
+.vscode/*

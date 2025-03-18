@@ -2,6 +2,7 @@
 import argparse
 
 from camsystem import camsystem
+from iotbike import iotbike
 
 
 def init_argparse():
@@ -12,7 +13,7 @@ def init_argparse():
     """
     parser = argparse.ArgumentParser(
         usage="%(prog)s [options] ",
-        description="Detect objects using opencv."
+        description=""
     )
 
     parser.add_argument(
@@ -42,14 +43,18 @@ def init_argparse():
         help="Take picture from webcam"
     )
     
-    parser.add_argument(
-        "-t", "--tracker", action="store_true",
-        help="Use DEEP SORT algorithm for tracking"
-    )
+    # parser.add_argument(
+    #     "-t", "--tracker", action="store_true",
+    #     help="Use DEEP SORT algorithm for tracking"
+    # )
 
     parser.add_argument(
         "-d", "--display", action="store_true",
         help="Display detections (only works with gui)"
+    )
+
+    parser.add_argument(
+        "--bike", action="store_true"
     )
 
     return parser
@@ -73,6 +78,8 @@ def main():
         camsystem.use_webcam_pic(args.index)
     elif args.webcam and args.tracker:
         camsystem.track_from_webcam(args.index)
+    elif args.bike:
+        iotbike.main(pi=args.pi)
 
 
 if __name__ == "__main__":
