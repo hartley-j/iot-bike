@@ -4,7 +4,7 @@ import cv2 as cv
 import time
 import datetime
 
-from iotbike import camhandler, objectdetection
+from iotbike import sensorhandler, objectdetection
 
 
 def detect_images(path: str) -> None:
@@ -27,7 +27,7 @@ def use_webcam_live(source, pi, disp):
 
     detector = objectdetection.ObjectDetection()
 
-    camera = camhandler.CamHandler(src=int(source),pi=pi)
+    camera = sensorhandler.SensorHandler(src=int(source),pi=pi)
     camera.start()
 
     close_flag = True
@@ -89,7 +89,7 @@ def track_from_webcam(source):
 
     detector = objectdetection.ObjectDetection()
 
-    camera = camhandler.CamHandler(src=int(source))
+    camera = sensorhandler.SensorHandler(src=int(source))
     camera.start()
 
     init_frame = camera.read()["frame"]

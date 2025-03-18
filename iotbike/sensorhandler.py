@@ -28,7 +28,7 @@ def _draw_boxes(image, boxes):
     return image
 
 
-class CamHandler:
+class SensorHandler:
     """Class to handle webcam`
     """
 

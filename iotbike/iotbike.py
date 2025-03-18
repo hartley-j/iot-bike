@@ -1,12 +1,12 @@
 
 from iotbike import objectdetection
-from iotbike import camhandler
+from iotbike import sensorshandler
 
 def main(pi=True, source=0):
 
     detector = objectdetection.ObjectDetection()
 
-    sensors = camhandler.CamHandler(src=int(source), pi=pi)
+    sensors = sensorhandler.SensorHandler(src=int(source), pi=pi)
     sensors.start()
 
     close_flag = True
