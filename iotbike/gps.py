@@ -8,9 +8,9 @@ class GPSData:
         self.GetData_Flag = False  # Flag indicating whether GPS data is obtained
         self.ParseData_Flag = False  # Flag indicating whether parsing is complete
         self.UTCTime = ""  # UTC time
-        self.Slatitude = ""  # Latitude
+        self.latitude = ""  # Latitude
         self.N_S = ""  # North/South indicator
-        self.Slongitude = ""  # Longitude
+        self.longitude = ""  # Longitude
         self.E_W = ""  # East/West indicator
         self.Usefull_Flag = False  # Indicates whether positioning info is valid
 
@@ -42,14 +42,14 @@ class GPSData:
                 self.UTCTime = fields[1]  # UTC time
 
                 usefull_buffer = fields[2]  # Positioning status
-                self.reset_buffer(self.Slatitude)
-                self.Slatitude = fields[3]  # Latitude
+                self.reset_buffer(self.latitude)
+                self.latitude = fields[3]  # Latitude
 
                 self.reset_buffer(self.N_S)
                 self.N_S = fields[4]  # N/S indicator
 
-                self.reset_buffer(self.Slongitude)
-                self.Slongitude = fields[5]  # Longitude
+                self.reset_buffer(self.longitude)
+                self.longitude = fields[5]  # Longitude
 
                 self.reset_buffer(self.E_W)
                 self.E_W = fields[6]  # E/W indicator
@@ -67,13 +67,13 @@ class GPSData:
         """Prints and formats the saved GPS data."""
         print("*****************************************************")
         print(f"UTCTime\t\t:[{self.UTCTime}]")
-        print(f"Slatitude\t:[{self.Slatitude}]")
+        print(f"Slatitude\t:[{self.latitude}]")
         print(f"N/S\t\t:[{self.N_S}]")
-        print(f"Slongitude\t:[{self.Slongitude}]")
+        print(f"Slongitude\t:[{self.longitude}]")
         print(f"E/W\t\t:[{self.E_W}]")
-        self.Slatitude = self.insert_array(self.Slatitude)
-        self.Slongitude = self.insert_array(self.Slongitude)
-        print(f"{self.Slatitude}, {self.Slongitude}")
+        self.latitude = self.insert_array(self.latitude)
+        self.longitude = self.insert_array(self.longitude)
+        print(f"{self.latitude}, {self.longitude}")
         print("*****************************************************")
 
     def insert_array(self, buff):
@@ -106,6 +106,23 @@ class GPSReader:
         """Read from the serial port."""
         self.buffer = self.ser.read(self.BUFFER_SIZE)
         return len(self.buffer), self.buffer.decode('utf-8')
+
+    def get_data(self):
+        buffer_size, buffer_data = self.read_buffer()
+
+        if buffer_size > 0:
+
+            self.gps.read_GPS_data(buffer_data)
+            self.gps.parse_gps_data()
+
+            if self.gps.ParseData_Flag and self.gps.Usefull_Flag:
+                self.gps.print_save()
+
+                # Reset flags
+                self.gps.Usefull_Flag = False
+                self.gps.ParseData_Flag = False
+
+                return self.gps.latitude, self.gps.longitude
 
     def main_loop(self):
         """Main loop to continuously read and process GPS data."""
