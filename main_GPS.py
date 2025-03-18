@@ -1,6 +1,9 @@
 import serial
 import time
 
+from GPS import GPSData
+from com import SerialPort
+
 class GPSReader:
     BUFFER_SIZE = 1024
 

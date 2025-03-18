@@ -1,7 +1,7 @@
 
 import argparse
 
-from camsystem import camsystem
+from iotbike import camsystem
 from iotbike import iotbike
 
 
