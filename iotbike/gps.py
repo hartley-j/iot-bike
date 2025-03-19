@@ -2,8 +2,17 @@ import re
 import serial
 import time
 
-class GPSData:
-    def __init__(self):
+
+class GPS:
+    BUFFER_SIZE = 1024
+
+    def __init__(self, port="/dev/ttyACM0", baudrate=115200):
+        self.ser = serial.Serial(port, baudrate, timeout=1)
+        self.buffer = bytearray(self.BUFFER_SIZE)
+
+        self.latitude = None
+        self.longitude = None
+
         self.GPS_DATA = ""
         self.GetData_Flag = False  # Flag indicating whether GPS data is obtained
         self.ParseData_Flag = False  # Flag indicating whether parsing is complete
@@ -14,8 +23,39 @@ class GPSData:
         self.E_W = ""  # East/West indicator
         self.Usefull_Flag = False  # Indicates whether positioning info is valid
 
+    def open_port(self):
+        """Open the serial port."""
+        if not self.ser.is_open:
+            self.ser.open()
+
+    def close_port(self):
+        """Close the serial port."""
+        if self.ser.is_open:
+            self.ser.close()
+
+    def read_buffer(self):
+        """Read from the serial port."""
+        self.buffer = self.ser.read(self.BUFFER_SIZE)
+        return len(self.buffer), self.buffer.decode('utf-8')
+
+    def update_data(self):
+        buffer_size, buffer_data = self.read_buffer()
+
+        if buffer_size > 0:
+
+            self.read_GPS_data(buffer_data)
+            self.parse_gps_data()
+
+            if self.gps.ParseData_Flag and self.gps.Usefull_Flag:
+
+                self.gps.print_save()
+
+                # Reset flags
+                self.gps.Usefull_Flag = False
+                self.gps.ParseData_Flag = False
+
+
     def read_GPS_data(self, gps_buffer):
-        """Reads GPS data from the buffer."""
         gps_data_head = None
 
         # Check if the buffer contains GPS data starting with $GPRMC or $GNRMC
@@ -83,47 +123,7 @@ class GPSData:
             return buff[:p-2] + ' ' + buff[p-2:]
         return buff
 
-
-class GPS:
-    BUFFER_SIZE = 1024
-
-    def __init__(self, port="/dev/ttyACM0", baudrate=115200):
-        self.ser = serial.Serial(port, baudrate, timeout=1)
-        self.gps = GPSData()
-        self.buffer = bytearray(self.BUFFER_SIZE)
-
-    def open_port(self):
-        """Open the serial port."""
-        if not self.ser.is_open:
-            self.ser.open()
-
-    def close_port(self):
-        """Close the serial port."""
-        if self.ser.is_open:
-            self.ser.close()
-
-    def read_buffer(self):
-        """Read from the serial port."""
-        self.buffer = self.ser.read(self.BUFFER_SIZE)
-        return len(self.buffer), self.buffer.decode('utf-8')
-
-    def update_data(self):
-        buffer_size, buffer_data = self.read_buffer()
-
-        if buffer_size > 0:
-
-            self.gps.read_GPS_data(buffer_data)
-            self.gps.parse_gps_data()
-
-            if self.gps.ParseData_Flag and self.gps.Usefull_Flag:
-                self.gps.print_save()
-
-                # Reset flags
-                self.gps.Usefull_Flag = False
-                self.gps.ParseData_Flag = False
-
     def get_data(self):
-            
         return self.latitude, self.longitude
 
     def savelatlong(self): # To be ran when sentry mode activated
