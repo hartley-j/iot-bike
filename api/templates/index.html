@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>IoT Bike Dashboard</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        h1 { color: #333; }
+        #status { margin-top: 20px; }
+        #refreshButton, #toggleButton { margin-top: 10px; padding: 5px 10px; }
+    </style>
+    <script>
+        async function fetchData() {
+            const response = await fetch('/api/bike');
+            const data = await response.json();
+
+            const statusDiv = document.getElementById('status');
+            if (data.error) {
+                statusDiv.innerHTML = `<p>${data.error}</p>`;
+            } else {
+                const { sentry_mode, latitude, longitude } = data.bike_status;
+                statusDiv.innerHTML = `
+                    <p><strong>Sentry Mode:</strong> ${sentry_mode}</p>
+                    <p><strong>Latitude:</strong> ${latitude}</p>
+                    <p><strong>Longitude:</strong> ${longitude}</p>
+                    <p><strong>Last Updated:</strong> ${data.last_updated}</p>
+                `;
+            }
+        }
+
+        async function toggleSentryMode() {
+            const response = await fetch('/api/bike');
+            const data = await response.json();
+            const currentMode = data.bike_status.sentry_mode;
+            const newMode = currentMode === 'active' ? 'inactive' : 'active';
+
+            await fetch('/api/bike', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    sentry_mode: newMode,
+                    latitude: data.bike_status.latitude,
+                    longitude: data.bike_status.longitude
+                })
+            });
+
+            fetchData();
+        }
+
+        document.addEventListener('DOMContentLoaded', fetchData);
+    </script>
+</head>
+<body>
+    <h1>IoT Bike Dashboard</h1>
+    <div id="status">Loading bike data...</div>
+    <button id="refreshButton" onclick="fetchData()">Refresh Data</button>
+    <button id="toggleButton" onclick="toggleSentryMode()">Toggle Sentry Mode</button>
+</body>
+</html>
