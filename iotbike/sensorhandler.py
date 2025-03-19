@@ -41,6 +41,7 @@ class SensorHandler:
             try:
                 from picamera2 import Picamera2
                 from imu import IMU
+                from gps import GPS
             except ImportError:
                 exit("Picamera not installed. Did you pick the wrong platform?")
 
@@ -52,6 +53,9 @@ class SensorHandler:
 
             self.sensehat = IMU()
             self.sensehat.update_data()
+
+            self.gps = GPS()
+            self.gps.update_data()
 
             self.thread = Thread(target=self._update_picam, name=name, args=())
         else:
@@ -74,7 +78,10 @@ class SensorHandler:
         Returns:
             np.ndarray: current frame
         """
-        return {"frame": self.frame, "accelerometer": self.sensehat.get_data(), "is_moving": self.sensehat.is_moving()}
+        return {"frame": self.frame, 
+                "accelerometer": self.sensehat.get_data(), 
+                "is_moving": self.sensehat.is_moving(), 
+                "gps": {"latitude": self.latitude, "longitude": self.longitude}}
 
     def stop(self):
         """Stops the while loop in the update function
@@ -113,6 +120,7 @@ class SensorHandler:
 
             self.frame = self.stream.capture_array()
             self.sensehat.update_data()
+            self.gps.update_data()
 
 
     def _display(self):

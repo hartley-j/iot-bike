@@ -36,8 +36,6 @@ def main(pi=True, source=0):
 
                 print(f"{now}: found {num_objects} objects. Is moving? {sensor_data['is_moving']}")
 
-                
-
 
         if disp and cv.waitKey(1) == 27:
             close_flag = False

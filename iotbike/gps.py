@@ -84,7 +84,7 @@ class GPSData:
         return buff
 
 
-class GPSReader:
+class GPS:
     BUFFER_SIZE = 1024
 
     def __init__(self, port="/dev/ttyACM0", baudrate=115200):
@@ -107,7 +107,7 @@ class GPSReader:
         self.buffer = self.ser.read(self.BUFFER_SIZE)
         return len(self.buffer), self.buffer.decode('utf-8')
 
-    def get_data(self):
+    def update_data(self):
         buffer_size, buffer_data = self.read_buffer()
 
         if buffer_size > 0:
@@ -122,7 +122,9 @@ class GPSReader:
                 self.gps.Usefull_Flag = False
                 self.gps.ParseData_Flag = False
 
-                return self.gps.latitude, self.gps.longitude
+    def get_data(self):
+
+        return self.latitude, self.longitude
 
     def main_loop(self):
         """Main loop to continuously read and process GPS data."""
