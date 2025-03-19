@@ -123,9 +123,22 @@ class GPS:
                 self.gps.ParseData_Flag = False
 
     def get_data(self):
-
+            
         return self.latitude, self.longitude
 
+    def savelatlong(self): # To be ran when sentry mode activated
+        self.savedlatitude=self.latitude
+        self.savedlongitude=self.longitude
+
+    def checklatlong(self): # To be ran while in sentry mode
+        lat_difference = abs(self.latitude - self.savedlatitude)
+        lon_difference = abs(self.longitude - self.savedlongitude)
+
+        if lat_difference <= 0.0000898 or lon_difference <= 0.0000898:
+            return True
+        else:
+            return False
+    
     def main_loop(self):
         """Main loop to continuously read and process GPS data."""
         try:
