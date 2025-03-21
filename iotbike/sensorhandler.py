@@ -79,9 +79,9 @@ class SensorHandler:
             np.ndarray: current frame
         """
         return {"frame": self.frame, 
-                "accelerometer": self.sensehat.get_data(), 
                 "is_moving": self.sensehat.is_moving(), 
-                "gps": {"latitude": self.latitude, "longitude": self.longitude}}
+                "gps": {"latitude": self.gps.latitude, "longitude": self.gps.longitude}
+            }
 
     def stop(self):
         """Stops the while loop in the update function
@@ -120,7 +120,7 @@ class SensorHandler:
 
             self.frame = self.stream.capture_array()
             self.sensehat.update_data()
-            self.gps.update_data()
+            self.gps.update()
 
 
     def _display(self):

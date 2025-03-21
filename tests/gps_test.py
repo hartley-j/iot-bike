@@ -12,8 +12,6 @@ def main():
     fig, (ax1, ax2, ax3) = plt.subplots(3, 1, figsize=(10, 8))
 
     gps = GPS()
-    gps.open_port()
-    gps.update_data()
 
     start_time = time.time()
 
@@ -38,13 +36,12 @@ def main():
     ax3.grid(True)
 
     while True:
-        gps.update_data()
-        
+        gps.update()
 
         current_time = time.time() - start_time
-        coord = gps.get_data()
+        useful, coord = gps.get_latlong()
 
-        if coord[0]:
+        if useful:
             lat.append(coord[0])
             long.append(coord[1])
             times.append(current_time)
@@ -53,10 +50,10 @@ def main():
             long_line.set_data(times, long)
 
             ax1.set_xlim(0, max(times) + 1)
-            ax1.set_ylim(min(lats) - 0.01, max(lats) + 0.01)
+            ax1.set_ylim(min(lat) - 0.01, max(lat) + 0.01)
 
             ax2.set_xlim(0, max(times) + 1)
-            ax2.set_ylim(min(longs) - 0.01, max(longs) + 0.01)
+            ax2.set_ylim(min(long) - 0.01, max(long) + 0.01)
 
             ax3.scatter(long, lat, color='blue')
         else:
