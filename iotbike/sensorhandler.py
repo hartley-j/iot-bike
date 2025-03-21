@@ -77,7 +77,8 @@ class SensorHandler:
         """
         return {"frame": self.frame, 
                 "is_moving": self.sensehat.is_moving(), 
-                "gps": {"latitude": self.gps.latitude, "longitude": self.gps.longitude}
+                "latitude": self.gps.latitude, 
+                "longitude": self.gps.longitude
             }
 
     def stop(self):
