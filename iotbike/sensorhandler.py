@@ -38,7 +38,7 @@ class SensorHandler:
         self.boxes = None
 
         if pi:
-	    from picamera2 import Picamera2
+            from picamera2 import Picamera2
             from imu import IMU
             from gps import GPS
  
