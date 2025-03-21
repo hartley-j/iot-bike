@@ -43,7 +43,7 @@ class SensorHandler:
             from iotbike.gps import GPS
  
             self.stream = Picamera2()
-            self.stream.configure(self.stream.create_preview_configuration(main={"format": "XRGB888", "size": (640, 480)}))
+            self.stream.configure(self.stream.create_preview_configuration(main={"format": "XRGB8888", "size": (640, 480)}))
             self.stream.start()
 
             self.frame = self.stream.capture_array()
