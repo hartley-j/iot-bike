@@ -27,7 +27,9 @@ def main(pi=True, source=0):
     sensors.start()
     sensor_data = sensors.read()
 
-    r, code = api_post({"sentry_mode": False, "latitude":sensor_data["latitude"], "longitude":sensor_data["longitude"], "is_moving": False, "objects": 0}, "/api/bike/")
+    sentry_mode = False
+
+    r, code = api_post({"sentry_mode": sentry_mode, "latitude":sensor_data["latitude"], "longitude":sensor_data["longitude"], "is_moving": False, "objects": 0}, "/api/bike/")
 
     if code != 200:
         raise Exception("Not able to post to API. Try again.")
