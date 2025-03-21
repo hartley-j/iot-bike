@@ -39,8 +39,8 @@ class SensorHandler:
 
         if pi:
             from picamera2 import Picamera2
-            from imu import IMU
-            from gps import GPS
+            from iotbike.imu import IMU
+            from iotbike.gps import GPS
  
             self.stream = Picamera2()
             self.stream.configure(self.stream.create_preview_configuration(main={"format": "XRGB888", "size": (640, 480)}))
