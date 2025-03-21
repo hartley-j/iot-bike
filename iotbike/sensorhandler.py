@@ -52,7 +52,7 @@ class SensorHandler:
             self.sensehat.update_data()
 
             self.gps = GPS()
-            self.gps.update_data()
+            self.gps.update()
 
             self.thread = Thread(target=self._update_picam, name=name, args=())
         else:
