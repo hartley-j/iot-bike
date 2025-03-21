@@ -8,7 +8,7 @@ import cv2 as cv
 import numpy as np
 import time
 
-from iotbike.camhandler import CamHandler
+from iotbike.sensorhandler import SensorHandler
 
 
 def _get_model_files(directory: str) -> tuple[str, str, str]:
@@ -21,7 +21,7 @@ def _get_model_files(directory: str) -> tuple[str, str, str]:
     config_ext = ["prototxt", "pbtxt", "cfg", "xml"]
     model, config, framework = None, None, None
 
-    resource = importlib.resources.files("camsystem") / f"resources/{directory}"
+    resource = importlib.resources.files("iotbike") / f"resources/{directory}"
     for file in resource.iterdir():
         if file.is_file():
             extension = str(file).rsplit("/")[-1].rsplit(".")[-1]
@@ -223,7 +223,7 @@ class ObjectDetection:
     def __init__(self):
         """Gets neural network config files and initiates network
         """
-        resource_dirs = importlib.resources.files("camsystem") / "resources"
+        # resource_dirs = importlib.resources.files("camsystem") / "resources"
         # models = [str(model) for model in resource_dirs.iterdir()
         #           if (model.is_dir() and (str(model).rsplit("/")[-1] != "position"))]
         # questions = [

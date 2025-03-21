@@ -2,6 +2,7 @@ webserver-docker/venv/
 **/__pycache__/
 iotbike/resources/
 
+.venv/
 venv/*
 
 .vscode/*

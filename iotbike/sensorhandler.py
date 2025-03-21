@@ -38,13 +38,10 @@ class SensorHandler:
         self.boxes = None
 
         if pi:
-            try:
-                from picamera2 import Picamera2
-                from imu import IMU
-                from gps import GPS
-            except ImportError:
-                exit("Picamera not installed. Did you pick the wrong platform?")
-
+	    from picamera2 import Picamera2
+            from imu import IMU
+            from gps import GPS
+ 
             self.stream = Picamera2()
             self.stream.configure(self.stream.create_preview_configuration(main={"format": "XRGB888", "size": (640, 480)}))
             self.stream.start()

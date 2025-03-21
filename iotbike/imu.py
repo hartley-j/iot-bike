@@ -1,4 +1,6 @@
 
+from time import sleep
+
 from sense_hat import SenseHat
 
 # class SenseHat:
@@ -15,7 +17,7 @@ class IMU:
     def __init__(self):
         self.sense = SenseHat()
 
-        self.red = (255, 0, 0)
+        
 
         self.update_data()
 
@@ -33,11 +35,24 @@ class IMU:
 
     def is_moving(self):
         if abs(self.x) > 1 or abs(self.y) > 1 or abs(self.z) > 1:
+            self.sense.show_letter("!",(255, 0, 0))
             return True
         else:
+            self.sense.clear()
             return False
 
-    def __del__(self):
-        self.sense.clear()
+    #def __del__(self):
+     #   self.sense.clear()
+        
+if __name__=="__main__":
+    
+    imu=IMU()
+    while True:
+        sleep(1)
+        imu.update_data()
+        print(imu.get_data())
+        print(imu.is_moving())
+        
+    
 
 

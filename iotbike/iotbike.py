@@ -2,7 +2,7 @@
 import requests
 
 from iotbike import objectdetection
-from iotbike import sensorshandler
+from iotbike import sensorhandler
 
 def api_post(data, suffix, url="http://joehartley.pythonanywhere.com"):
 
