@@ -6,11 +6,7 @@ from iotbike import sensorhandler
 
 def api_post(data, suffix, url="http://joehartley.pythonanywhere.com"):
 
-    response = requests.post(url + suffix, json={
-        "sentry_mode": sentry_mode,
-        "latitude": latitude,
-        "longitude": longitude
-    })
+    response = requests.post(url + suffix, json=data)
 
     return response.json()
 
