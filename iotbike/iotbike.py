@@ -9,11 +9,11 @@ def api_post(data, suffix, url="http://joehartley.pythonanywhere.com"):
 
     response = requests.post(url + suffix, json=data)
 
-    return response
+    return response.json()
 
 def api_get(suffix, url="http://joehartley.pythonanywhere.com"):
     response = requests.get(url + suffix)
-    return response
+    return response.json()
 
 
 def main(pi=True, source=0):
@@ -67,4 +67,3 @@ def main(pi=True, source=0):
     
     finally:
         sensors.stop()
-        cv.destroyAllWindows()
