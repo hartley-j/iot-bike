@@ -25,7 +25,7 @@ def main(pi=True, source=0):
 
     sentry_mode = False
 
-    response = api_post({"sentry_mode": sentry_mode, "latitude":sensor_data["latitude"], "longitude":sensor_data["longitude"], "is_moving": False, "objects": 0}, "/api/bike/")
+    response = api_post({"sentry_mode": sentry_mode, "latitude":sensor_data["latitude"], "longitude":sensor_data["longitude"], "objects": 0}, "/api/bike/")
     
     close_flag = True
     frame_rate = 30
@@ -60,7 +60,7 @@ def main(pi=True, source=0):
 
             continue
 
-        response = api_post({"sentry_mode": sentry_mode, "latitude": sensor_data["latitude"], "longitude": sensor_data["longitude"], "is_moving": sensor_data["is_moving"], "objects": num_objects}, "/api/bike/")
+        response = api_post({"sentry_mode": sentry_mode, "latitude": sensor_data["latitude"], "longitude": sensor_data["longitude"], "objects": num_objects}, "/api/bike/")
 
 
     camera.stop()
