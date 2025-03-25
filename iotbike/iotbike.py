@@ -17,51 +17,53 @@ def api_get(suffix, url="http://joehartley.pythonanywhere.com"):
 
 def main(pi=True, source=0):
 
-    detector = objectdetection.ObjectDetection()
+    try:
 
-    sensors = sensorhandler.SensorHandler(src=int(source), pi=pi)
-    sensors.start()
-    sensor_data = sensors.read()
+        detector = objectdetection.ObjectDetection()
 
-    sentry_mode = False
-
-    response = api_post({"sentry_mode": sentry_mode, "latitude":sensor_data["latitude"], "longitude":sensor_data["longitude"], "objects": 0}, "/api/bike/")
-    
-    close_flag = True
-    frame_rate = 30
-    prev = 0
-
-    while close_flag:
-
-        time_elapsed = time.time() - prev
-        
+        sensors = sensorhandler.SensorHandler(src=int(source), pi=pi)
+        sensors.start()
         sensor_data = sensors.read()
-        response = api_get("/api/bike/")
-        sentry_mode = bool(response["bike_status"]["sentry_mode"])
+
+        sentry_mode = False
+
+        response = api_post({"sentry_mode": sentry_mode, "latitude":sensor_data["latitude"], "longitude":sensor_data["longitude"], "objects": 0}, "/api/bike/")
         
-        if time_elapsed > 1. / frame_rate:
-            prev = time.time()
+        close_flag = True
+        frame_rate = 30
+        prev = 0
+
+        while close_flag:
+
+            time_elapsed = time.time() - prev
             
-            output = detector.detect_filtered(sensor_data["frame"], 0.8)
-            boxes_frame = output.draw_boxes()
+            sensor_data = sensors.read()
+            response = api_get("/api/bike/")
+            sentry_mode = bool(response["bike_status"]["sentry_mode"])
+            
+            if time_elapsed > 1. / frame_rate:
+                prev = time.time()
+                
+                output = detector.detect_filtered(sensor_data["frame"], 0.8)
+                boxes_frame = output.draw_boxes()
 
-            num_objects = output.get_objects()
-            if num_objects > 0:
-                now = datetime.datetime.now().isoformat()
-                object_flag = True
+                num_objects = output.get_objects()
+                if num_objects > 0:
+                    now = datetime.datetime.now().isoformat()
+                    object_flag = True
 
-                # print(f"{now}: found {num_objects} objects. Is moving? {sensor_data['is_moving']}")
-            else:
-                object_flag = False
+                    # print(f"{now}: found {num_objects} objects. Is moving? {sensor_data['is_moving']}")
+                else:
+                    object_flag = False
 
-        if object_flag or sensor_data["is_moving"]:
+            if object_flag or sensor_data["is_moving"]:
 
-            # TODO: add code for sending alert(s)
+                # TODO: add code for sending alert(s)
 
-            continue
+                continue
 
-        response = api_post({"sentry_mode": sentry_mode, "latitude": sensor_data["latitude"], "longitude": sensor_data["longitude"], "objects": num_objects}, "/api/bike/")
-
-
-    camera.stop()
-    cv.destroyAllWindows()
+            response = api_post({"sentry_mode": sentry_mode, "latitude": sensor_data["latitude"], "longitude": sensor_data["longitude"], "objects": num_objects}, "/api/bike/")
+    
+    finally:
+        sensors.stop()
+        cv.destroyAllWindows()
