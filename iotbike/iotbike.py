@@ -1,5 +1,6 @@
 
 import requests
+import time
 
 from iotbike import objectdetection
 from iotbike import sensorhandler
