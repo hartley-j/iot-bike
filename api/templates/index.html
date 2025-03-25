@@ -2,12 +2,16 @@
 <html>
 <head>
     <title>IoT Bike Dashboard</title>
+
     <style>
         body { font-family: Arial, sans-serif; margin: 20px; }
         h1 { color: #333; }
         #status { margin-top: 20px; }
         #refreshButton, #toggleButton { margin-top: 10px; padding: 5px 10px; }
+        #alertMessage { color: red; font-weight: bold; margin-top: 20px; }
+        #imageDisplay { margin-top: 20px; }
     </style>
+    
     <script>
         async function fetchData() {
             const response = await fetch('/api/bike');
@@ -25,13 +29,16 @@
                     <p><strong>Last Updated:</strong> ${data.last_updated}</p>
                 `;
             }
+
+            fetchAlerts();
+            fetchImage();
         }
 
         async function toggleSentryMode() {
             const response = await fetch('/api/bike');
             const data = await response.json();
             const currentMode = data.bike_status.sentry_mode;
-            const newMode = currentMode === 'active' ? 'inactive' : 'active';
+            const newMode = !(currentMode);
 
             await fetch('/api/bike', {
                 method: 'POST',
@@ -46,13 +53,44 @@
             fetchData();
         }
 
-        document.addEventListener('DOMContentLoaded', fetchData);
+        async function fetchAlerts() {
+            const response = await fetch('/api/alerts');
+            const alerts = await response.json();
+
+            if (alerts.object_flag || alerts.movement_flag || alerts.coord_flag) {
+                document.getElementById('alertMessage').innerHTML = '<p>ALERT: One or more alert flags are active!</p>';
+            } else {
+                document.getElementById('alertMessage').innerHTML = '<p></p>';
+            }
+        }
+
+        async function fetchImage() {
+            const response = await fetch('/api/image');
+            const data = await response.json();
+
+            if (data.image) {
+                const imageElement = document.getElementById('imageDisplay');
+                imageElement.src = `data:image/jpeg;base64,${data.image}`;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchData();
+            fetchAlerts();
+            fetchImage();
+        });
     </script>
 </head>
+
 <body>
     <h1>IoT Bike Dashboard</h1>
+    <h2>Bike Data</h2>
     <div id="status">Loading bike data...</div>
     <button id="refreshButton" onclick="fetchData()">Refresh Data</button>
     <button id="toggleButton" onclick="toggleSentryMode()">Toggle Sentry Mode</button>
+    <h2>Alerts</h2>
+    <div id="alertMessage"></div>
+    <img id="imageDisplay" alt="Latest Image" style="margin-top: 20px; max-width: 100%;">
 </body>
+
 </html>

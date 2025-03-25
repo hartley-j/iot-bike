@@ -1,6 +1,8 @@
 
 import requests
 import time
+import cv2
+import base64
 
 from iotbike import objectdetection
 from iotbike import sensorhandler
@@ -62,10 +64,12 @@ def main(pi=True, source=0):
 
                 num_objects = output.get_objects()
                 if num_objects > 0:
-                    now = datetime.datetime.now().isoformat()
                     object_flag = True
 
-                    # print(f"{now}: found {num_objects} objects. Is moving? {sensor_data['is_moving']}")
+                    ret, frame_buffer = cv2.imencode(".jpg",boxes_frame)
+                    api_post(base64.b64encode(frame_buffer), "/api/image")
+
+                    print(f"{now}: found {num_objects} objects.")
                 else:
                     object_flag = False
 
@@ -75,7 +79,9 @@ def main(pi=True, source=0):
 
                 continue
 
-            api_post({"sentry_mode": sentry_mode, "latitude": sensor_data["latitude"], "longitude": sensor_data["longitude"], "objects": num_objects}, "/api/bike")
+            post = {"sentry_mode": sentry_mode, "latitude": sensor_data["latitude"], "longitude": sensor_data["longitude"], "objects": num_objects}
+            print(post)
+            api_post(post, "/api/bike")
             response = api_get("/api/bike")
 
             if response.ok:
