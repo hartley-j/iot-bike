@@ -43,10 +43,10 @@ def init_argparse():
         help="Take picture from webcam"
     )
     
-    # parser.add_argument(
-    #     "-t", "--tracker", action="store_true",
-    #     help="Use DEEP SORT algorithm for tracking"
-    # )
+    parser.add_argument(
+        "-t", "--tracker", action="store_true",
+        help="Use DEEP SORT algorithm for tracking"
+    )
 
     parser.add_argument(
         "-d", "--display", action="store_true",
