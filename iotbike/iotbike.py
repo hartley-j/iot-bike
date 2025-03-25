@@ -69,7 +69,7 @@ def main(pi=True, source=0):
                     ret, frame_buffer = cv2.imencode(".jpg",boxes_frame)
                     api_post(base64.b64encode(frame_buffer), "/api/image")
 
-                    print(f"{now}: found {num_objects} objects.")
+                    print(f"Found {num_objects} objects.")
                 else:
                     object_flag = False
 
