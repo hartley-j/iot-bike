@@ -13,7 +13,7 @@ def api_post(data, suffix, url="http://joehartley.pythonanywhere.com"):
 
 def api_get(suffix, url="http://joehartley.pythonanywhere.com"):
     response = requests.get(url + suffix)
-    return response.json()
+    return response
 
 
 def main(pi=True, source=0):
@@ -28,7 +28,7 @@ def main(pi=True, source=0):
 
         sentry_mode = False
 
-        response = api_post({"sentry_mode": sentry_mode, "latitude":sensor_data["latitude"], "longitude":sensor_data["longitude"], "objects": 0}, "/api/bike/")
+        response = api_post({"sentry_mode": sentry_mode, "latitude":sensor_data["latitude"], "longitude":sensor_data["longitude"], "objects": 0}, "/api/bike/").json()
         
         close_flag = True
         frame_rate = 30
