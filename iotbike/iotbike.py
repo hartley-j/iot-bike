@@ -16,7 +16,7 @@ def api_post(data, suffix, url="http://joehartley.pythonanywhere.com"):
     if not(response.ok):
         raise Exception(f"{datetime.now().isoformat()} Error posting data to the api: {response.text}")
     else:
-        return response
+        return response.json()
 
 def api_get(suffix, url="http://joehartley.pythonanywhere.com"):
     
@@ -25,7 +25,7 @@ def api_get(suffix, url="http://joehartley.pythonanywhere.com"):
     if not(response.ok):
         raise Exception(f"{datetime.now().isoformat()} Error getting data from the api: {response.text}")
     else:
-        return response
+        return response.json()
 
 def log(message):
     print(f"{datetime.now().isoformat()} {message}")
@@ -58,7 +58,7 @@ def main(source=0, pi=True):
         detector = objectdetection.ObjectDetection()
 
         sensors = sensorhandler.SensorHandler(src=int(source), pi=pi)
-        sensor.start()
+        sensors.start()
         sensor_data = sensors.read()
 
         saved_coord = (None, None)
@@ -122,7 +122,7 @@ def main(source=0, pi=True):
             if num_people > 0:
                 object_flag = True
 
-                capture_frame = output.draw_boxes()
+                capture_frame = detection_output.draw_boxes()
                 ret, buffer = cv2.imencode(".jpg", capture_frame)
                 api_post({"image": base64.b64encode(buffer)}, "/api/image")
 
@@ -155,6 +155,10 @@ def main(source=0, pi=True):
 
     finally:
         sensors.stop()
+
+
+if __name__ == "__main__":
+    main()
 
 
 # def main(pi=True, source=0):
