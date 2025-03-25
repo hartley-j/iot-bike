@@ -29,7 +29,11 @@ def main(pi=True, source=0):
         sentry_mode = False
 
         response = api_post({"sentry_mode": sentry_mode, "latitude":sensor_data["latitude"], "longitude":sensor_data["longitude"], "objects": 0}, "/api/bike/")
-        response = response.json()
+
+        if response.ok:
+            response = response.json()
+        else:
+            raise Exception("Something was wrong with POSTing data to the webserver. Check the server.")
 
         close_flag = True
         frame_rate = 30
@@ -40,7 +44,7 @@ def main(pi=True, source=0):
             time_elapsed = time.time() - prev
             
             sensor_data = sensors.read()
-            response = api_get("/api/bike/")
+            response = api_get("/api/bike")
             sentry_mode = bool(response["bike_status"]["sentry_mode"])
             
             if time_elapsed > 1. / frame_rate:
@@ -65,7 +69,9 @@ def main(pi=True, source=0):
                 continue
 
             response = api_post({"sentry_mode": sentry_mode, "latitude": sensor_data["latitude"], "longitude": sensor_data["longitude"], "objects": num_objects}, "/api/bike/")
-            response = response.json()
+
+            if response.ok:
+                response = response.json()
 
     finally:
         sensors.stop()
