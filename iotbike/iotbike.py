@@ -28,7 +28,8 @@ def main(pi=True, source=0):
 
         sentry_mode = False
 
-        response = api_post({"sentry_mode": sentry_mode, "latitude":sensor_data["latitude"], "longitude":sensor_data["longitude"], "objects": 0}, "/api/bike")
+        api_post({"sentry_mode": sentry_mode, "latitude":sensor_data["latitude"], "longitude":sensor_data["longitude"], "objects": 0}, "/api/bike")
+        response = api_get("/api/bike")
 
         if response.ok:
             response = response.json()
@@ -68,7 +69,8 @@ def main(pi=True, source=0):
 
                 continue
 
-            response = api_post({"sentry_mode": sentry_mode, "latitude": sensor_data["latitude"], "longitude": sensor_data["longitude"], "objects": num_objects}, "/api/bike")
+            api_post({"sentry_mode": sentry_mode, "latitude": sensor_data["latitude"], "longitude": sensor_data["longitude"], "objects": num_objects}, "/api/bike")
+            response = api_get("/api/bike")
 
             if response.ok:
                 response = response.json()
