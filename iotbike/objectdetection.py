@@ -175,6 +175,22 @@ class DetectionOutput:
         else:
             return 0
 
+    def get_people(self):
+
+        if self.boxes is not None:
+            people = []
+
+            for i in range(len(self.boxes)):
+                box = self.boxes[i]
+
+                if self.__classes[self.classIDs[i]] == "person":
+                    people.append(box)
+
+            return len(people)
+        else:
+            return 0
+            
+
     def _filter_boxes(self, raw_detections: np.ndarray, shape: tuple[int, ...], threshold: float):
         """Performs non-maximum suppression on bounding boxes
 
