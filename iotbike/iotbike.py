@@ -9,7 +9,7 @@ def api_post(data, suffix, url="http://joehartley.pythonanywhere.com"):
 
     response = requests.post(url + suffix, json=data)
 
-    return response.json()
+    return response
 
 def api_get(suffix, url="http://joehartley.pythonanywhere.com"):
     response = requests.get(url + suffix)
