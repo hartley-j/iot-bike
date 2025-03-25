@@ -116,7 +116,7 @@ class DetectionOutput:
         self.elapsed = elapsed
         self.__framework = framework
 
-        names_file = importlib.resources.files("camsystem") / "resources/coco.names"
+        names_file = importlib.resources.files("iotbike") / "resources/coco.names"
         with importlib.resources.as_file(names_file) as f:
             self.__classes = open(f).read().strip().split("\n")
 
