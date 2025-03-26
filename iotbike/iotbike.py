@@ -118,7 +118,7 @@ def main(source=0, pi=True):
 
 
             detection_output = detector.detect_filtered(sensor_data["frame"], 0.9)
-            num_people = detection_output.get_people()
+            num_people = detection_output.get_objects()
 
             if num_people > 0 and sentry_mode:
                 # object_flag = True
