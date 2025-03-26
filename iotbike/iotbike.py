@@ -110,10 +110,8 @@ def main(source=0, pi=True):
                 saved_coord = (sensor_data["latitude"], sensor_data["longitude"])
             elif sentry_mode and is_outside_tolerance(saved_coord, (sensor_data["latitude"], sensor_data["longitude"])):
                 coord_flag = True
-            elif not sentry_mode and saved_coord:
+            elif not sentry_mode:
                 saved_coord = (None, None)
-                coord_flag = False
-            else:
                 coord_flag = False
 
 
@@ -135,12 +133,12 @@ def main(source=0, pi=True):
 
             if people_counter > 5 and sentry_mode:
                 object_flag = True
-            else:
+            elif not sentry_mode:
                 object_flag = False
 
             if sensor_data["is_moving"] and sentry_mode:
                 movement_flag = True
-            else:
+            elif not sentry_mode:
                 movement_flag = False
 
             flags = {
