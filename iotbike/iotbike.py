@@ -149,6 +149,7 @@ def main(source=0, pi=True):
                 "coord_flag": coord_flag
             }
             bike_status = {
+                "sentry_mode": sentry_mode,
                 "latitude": sensor_data["latitude"], 
                 "longitude": sensor_data["longitude"],
                 "objects": num_people
