@@ -99,21 +99,13 @@ def main(source=0, pi=True):
             bike_status = api_get("/api/bike")["bike_status"]
             sentry_mode = bool(bike_status["sentry_mode"])
 
-            flags = api_get("/api/alerts")["alerts"]
-
-            movement_flag = flags["movement_flag"]
-            object_flag = flags["object_flag"]
-            coord_flag = flags["coord_flag"]
-
-
             if sentry_mode and not all(saved_coord):
-                saved_coord = (sensor_data["latitude"], sensor_data["longitude"])
+                saved_coord = (sensor_data["latitude"], sensor_data["longitude"]) # saves current coordinate
             elif sentry_mode and is_outside_tolerance(saved_coord, (sensor_data["latitude"], sensor_data["longitude"])):
-                coord_flag = True
+                coord_flag = True 
             elif not sentry_mode:
                 saved_coord = (None, None)
                 coord_flag = False
-
 
             detection_output = detector.detect_filtered(sensor_data["frame"], 0.9)
             num_people = detection_output.get_objects()
