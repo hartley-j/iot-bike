@@ -146,8 +146,7 @@ def main(source=0, pi=True):
             flags = {
                 "movement_flag": movement_flag,
                 "object_flag": object_flag,
-                "coord_flag": coord_flag,
-                "save_coord_flag": save_coord_flag
+                "coord_flag": coord_flag
             }
             bike_status = {
                 "latitude": sensor_data["latitude"], 
