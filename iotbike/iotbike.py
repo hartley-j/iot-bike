@@ -123,7 +123,7 @@ def main(source=0, pi=True):
                 # object_flag = False
                 people_counter = 0
 
-            if people_counter > 5 and sentry_mode:
+            if people_counter >= 2 and sentry_mode:
                 object_flag = True
             elif not sentry_mode:
                 object_flag = False
