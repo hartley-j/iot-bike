@@ -70,7 +70,6 @@ def main(source=0, pi=True):
         movement_flag = False
         object_flag = False
         coord_flag = False
-        save_coord_flag = False
 
         bike_status = {
             "sentry_mode": sentry_mode, 
@@ -84,13 +83,14 @@ def main(source=0, pi=True):
         flags = {
             "movement_flag": movement_flag,
             "object_flag": object_flag,
-            "coord_flag": coord_flag,
-            "save_coord_flag": save_coord_flag
+            "coord_flag": coord_flag
         }
         log(f"Initial flags being send: {flags}")
         api_post(flags, "/api/alerts")
 
         log("Initialisation completed, now entering loop")
+
+        people_counter = 0
 
         close_flag = True
         while close_flag:
@@ -104,29 +104,37 @@ def main(source=0, pi=True):
             movement_flag = flags["movement_flag"]
             object_flag = flags["object_flag"]
             coord_flag = flags["coord_flag"]
-            save_coord_flag = flags["save_coord_flag"]
 
-            if save_coord_flag and not all(saved_coord):
+
+            if sentry_mode and not all(saved_coord):
                 saved_coord = (sensor_data["latitude"], sensor_data["longitude"])
-            elif save_coord_flag and is_outside_tolerance(save_coord_flag, (sensor_data["latitude"], sensor_data["longitude"])) and sentry_mode:
+            elif sentry_mode and is_outside_tolerance(saved_coord, (sensor_data["latitude"], sensor_data["longitude"])):
                 coord_flag = True
-            elif not save_coord_flag and saved_coord:
+            elif not sentry_mode and saved_coord:
                 saved_coord = (None, None)
                 coord_flag = False
             else:
                 coord_flag = False
 
+
             detection_output = detector.detect_filtered(sensor_data["frame"], 0.9)
             num_people = detection_output.get_people()
 
             if num_people > 0:
-                object_flag = True
+                # object_flag = True
+                people_counter += 1
 
                 capture_frame = detection_output.draw_boxes()
                 ret, buffer = cv2.imencode(".jpg", capture_frame)
                 api_post({"image": base64.b64encode(buffer)}, "/api/image")
 
                 log(f"Found {num_people} people in current frame -- uploaded frame to api")
+            else:
+                # object_flag = False
+                people_counter = 0
+
+            if people_counter > 5:
+                object_flag = True
             else:
                 object_flag = False
 
