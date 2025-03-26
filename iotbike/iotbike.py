@@ -120,7 +120,7 @@ def main(source=0, pi=True):
             detection_output = detector.detect_filtered(sensor_data["frame"], 0.9)
             num_people = detection_output.get_people()
 
-            if num_people > 0:
+            if num_people > 0 and sentry_mode:
                 # object_flag = True
                 people_counter += 1
 
@@ -133,12 +133,12 @@ def main(source=0, pi=True):
                 # object_flag = False
                 people_counter = 0
 
-            if people_counter > 5:
+            if people_counter > 5 and sentry_mode:
                 object_flag = True
             else:
                 object_flag = False
 
-            if sensor_data["is_moving"]:
+            if sensor_data["is_moving"] and sentry_mode:
                 movement_flag = True
             else:
                 movement_flag = False
@@ -149,7 +149,6 @@ def main(source=0, pi=True):
                 "coord_flag": coord_flag
             }
             bike_status = {
-                "sentry_mode": sentry_mode,
                 "latitude": sensor_data["latitude"], 
                 "longitude": sensor_data["longitude"],
                 "objects": num_people
